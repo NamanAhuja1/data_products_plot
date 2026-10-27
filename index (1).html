@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="date" content="2026-10-27" />
+  <title>Horsepower and fuel economy</title>
+  <style type="text/css">
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="https://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="https://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Horsepower and fuel economy</h1>
+  <p class="date">27 October 2026</p>
+</div>
+<div id="the-question" class="slide section level2">
+<h1>The question</h1>
+<style>
+body { background: #f8f7f3; color: #242823; font-family: Georgia, serif; }
+.slide { padding: 3.5rem 5.5rem; }
+h1, h2 { color: #213d35; font-weight: 600; }
+h1 { font-size: 2.6rem; }
+h2 { font-size: 2.1rem; margin-bottom: .8rem; }
+p, li { font-size: 1.18rem; line-height: 1.55; max-width: 54rem; }
+.small { font-size: .88rem; color: #5b625d; }
+.chart-note { font-size: 1rem; margin-top: .2rem; }
+#car-chart { width: min(100%, 1050px); height: 510px; }
+@media (max-width: 750px) {
+  .slide { padding: 2rem 1.2rem; }
+  #car-chart { height: 440px; }
+}
+</style>
+<p>Do cars with more horsepower use more fuel?</p>
+<p>I used the 32 cars in R’s built-in <code>mtcars</code> dataset to
+compare engine horsepower with miles per gallon (mpg). A higher mpg
+means better fuel economy.</p>
+</div>
+<div id="the-chart" class="slide section level2">
+<h1>The chart</h1>
+<p>Each dot is a car. Hover to see its name and values. You can also
+zoom in or hide a cylinder group in the legend.</p>
+<div id="car-chart" role="img"
+aria-label="Interactive scatter plot of horsepower versus miles per gallon for 32 cars, grouped by cylinder count">
+
+</div>
+<script src="https://cdn.plot.ly/plotly-4.1.1.min.js" charset="utf-8"></script>
+<script>
+const cars = [
+  ["Mazda RX4",21.0,110,6],["Mazda RX4 Wag",21.0,110,6],
+  ["Datsun 710",22.8,93,4],["Hornet 4 Drive",21.4,110,6],
+  ["Hornet Sportabout",18.7,175,8],["Valiant",18.1,105,6],
+  ["Duster 360",14.3,245,8],["Merc 240D",24.4,62,4],
+  ["Merc 230",22.8,95,4],["Merc 280",19.2,123,6],
+  ["Merc 280C",17.8,123,6],["Merc 450SE",16.4,180,8],
+  ["Merc 450SL",17.3,180,8],["Merc 450SLC",15.2,180,8],
+  ["Cadillac Fleetwood",10.4,205,8],["Lincoln Continental",10.4,215,8],
+  ["Chrysler Imperial",14.7,230,8],["Fiat 128",32.4,66,4],
+  ["Honda Civic",30.4,52,4],["Toyota Corolla",33.9,65,4],
+  ["Toyota Corona",21.5,97,4],["Dodge Challenger",15.5,150,8],
+  ["AMC Javelin",15.2,150,8],["Camaro Z28",13.3,245,8],
+  ["Pontiac Firebird",19.2,175,8],["Fiat X1-9",27.3,66,4],
+  ["Porsche 914-2",26.0,91,4],["Lotus Europa",30.4,113,4],
+  ["Ford Pantera L",15.8,264,8],["Ferrari Dino",19.7,175,6],
+  ["Maserati Bora",15.0,335,8],["Volvo 142E",21.4,109,4]
+];
+const colors = {4: "#427b65", 6: "#d29a4d", 8: "#a65f59"};
+const traces = [4, 6, 8].map(cyl => {
+  const rows = cars.filter(car => car[3] === cyl);
+  return {
+    type: "scatter", mode: "markers", name: `${cyl} cylinders`,
+    x: rows.map(car => car[2]), y: rows.map(car => car[1]),
+    text: rows.map(car => car[0]),
+    marker: {size: 12, color: colors[cyl], opacity: .87,
+             line: {color: "#ffffff", width: 1}},
+    hovertemplate: "%{text}<br>%{x} hp · %{y} mpg<extra></extra>"
+  };
+});
+Plotly.newPlot("car-chart", traces, {
+  paper_bgcolor: "#f8f7f3", plot_bgcolor: "#f8f7f3",
+  font: {family: "Georgia, serif", size: 15, color: "#242823"},
+  margin: {l: 72, r: 24, t: 20, b: 67},
+  xaxis: {title: "Horsepower (hp)", gridcolor: "#e4e4df", zeroline: false},
+  yaxis: {title: "Fuel economy (mpg)", gridcolor: "#e4e4df", zeroline: false},
+  legend: {orientation: "h", x: 0, y: 1.13}
+}, {responsive: true, displaylogo: false});
+</script>
+</div>
+<div id="what-i-noticed" class="slide section level2">
+<h1>What I noticed</h1>
+<p>Cars with higher horsepower generally have lower mpg in this group.
+The four-cylinder cars mostly sit toward the upper left of the chart,
+while the eight-cylinder cars cluster farther right and lower down.</p>
+<p>This is a pattern in these 32 cars, not proof that horsepower alone
+causes the difference. Weight and other design choices matter too.</p>
+<p class="small">
+Data: <code>mtcars</code>, included with R. The data come from the 1974
+Motor Trend US magazine road tests.
+</p>
+</div>
+</body>
+</html>
